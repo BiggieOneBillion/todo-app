@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { useGlobalContext } from "./useGlobalContext";
 import { filterData, hasTimePassed } from "../data/home";
 
 export const useDisplayActivities = () => {
   // FROM GLOBAL CONTEXT
-  const { list, setList } = useGlobalContext();
+  const { list, setList, dateInput } = useGlobalContext();
 
   // STATE VALUES
   const [displayList, setDisplayList] = useState({}); // we would use this state to perform editing and deleting and remind the user to save before existing.
   const [position, setPosition] = useState(0);
   const [localData, setLocalData] = useState(false);
   const [btnText, setBtnText] = useState("Save Activities");
+  const [showTodoData, setShowTodoData] = useState({});
 
   // FUNCTIONS
   function handleMarkAsCompleted(index) {
@@ -44,22 +45,47 @@ export const useDisplayActivities = () => {
     }
   }
 
+  const removeDuplicates = (data) => {
+    const uniqueData = Array.from(
+      new Set(data.map((item) => item.activity))
+    ).map((activity) => data.find((item) => item.activity === activity));
+
+    return uniqueData;
+  };
+
   // SAVING TO LOCALSTORAGE
   function handleSavingToLocalStorage() {
-    localStorage.setItem("todo", JSON.stringify({ todo: [displayList] }));
     let fromStorage = localStorage.getItem("todo");
     if (fromStorage) {
+      let parsed = JSON.parse(fromStorage);
+      if (Object.keys(parsed.todo).includes(dateInput)) {
+        parsed.todo[dateInput].work = removeDuplicates([
+          ...displayList.work,
+          ...parsed.todo[dateInput].work,
+        ]);
+        localStorage.setItem("todo", JSON.stringify(parsed));
+      } else {
+        parsed.todo[dateInput] = displayList;
+        localStorage.setItem("todo", JSON.stringify(parsed));
+      }
       setBtnText("saved");
+      setList({});
+      setDisplayList({});
+    } else {
+      localStorage.setItem(
+        "todo",
+        JSON.stringify({ todo: { [dateInput]: displayList } })
+      );
+      setBtnText("saved");
+      setList({});
+      setDisplayList({});
     }
   }
   // CHECKING AND LOADING FROM LOCAL STORAGE
   function handleCheckLocalStorage() {
     let fromStorage = localStorage.getItem("todo");
 
-    if (
-      fromStorage &&
-      JSON.parse(fromStorage).todo[0].date === new Date().toLocaleDateString()
-    ) {
+    if (fromStorage) {
       setLocalData(true);
     }
   }
@@ -77,27 +103,29 @@ export const useDisplayActivities = () => {
 
   function handleLoadLocalData() {
     let fromStorage = localStorage.getItem("todo");
-
-    if (
-      fromStorage &&
-      JSON.parse(fromStorage).todo[0].date === new Date().toLocaleDateString()
-    ) {
-      if (Array.isArray(list.work) && list.work.length > 0) {
-        setList({
-          ...list,
-          work: checkTime([
-            ...new Set([...list.work, ...JSON.parse(fromStorage).todo[0].work]),
-          ]),
-        });
-        setLocalData(false);
-      } else {
-        setList({
-          ...JSON.parse(fromStorage).todo[0],
-          work: checkTime(JSON.parse(fromStorage).todo[0].work),
-        });
-        setLocalData(false);
-      }
-    }
+    let parsed = JSON.parse(fromStorage);
+    setShowTodoData(parsed);
+    setLocalData(false);
+    // if (
+    //   fromStorage &&
+    //   JSON.parse(fromStorage).todo[0].date === new Date().toLocaleDateString()
+    // ) {
+    //   if (Array.isArray(list.work) && list.work.length > 0) {
+    //     setList({
+    //       ...list,
+    //       work: checkTime([
+    //         ...new Set([...list.work, ...JSON.parse(fromStorage).todo[0].work]),
+    //       ]),
+    //     });
+    //     setLocalData(false);
+    //   } else {
+    //     setList({
+    //       ...JSON.parse(fromStorage).todo[0],
+    //       work: checkTime(JSON.parse(fromStorage).todo[0].work),
+    //     });
+    //     setLocalData(false);
+    //   }
+    // }
   }
 
   function handleClearLocalStorage() {
@@ -137,10 +165,6 @@ export const useDisplayActivities = () => {
     setBtnText("Save Activities");
   }, [list.work?.length]); // only runs when the length of the work array is updated.
 
-  useEffect(() => {
-    handleCheckLocalStorage();
-  }, []);
-
   // RETURNED VALUES
 
   return {
@@ -161,5 +185,6 @@ export const useDisplayActivities = () => {
     handleCheckLocalStorage, // checks if their is data in the local storage
     handleLoadLocalData, // loads the data if the data exist in the localstorage
     handleClearLocalStorage, // clears the data stored in the local storage.
+    showTodoData,
   };
 };

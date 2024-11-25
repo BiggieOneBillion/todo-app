@@ -1,5 +1,4 @@
 import React, { Fragment } from "react";
-import { VscTrash } from "react-icons/vsc";
 import { Tooltip } from "../ui/tooltip";
 
 const ActionBtns = ({
@@ -20,15 +19,6 @@ const ActionBtns = ({
               className="text-sm font-medium rounded bg-blue-600 text-white px-4 py-2 w-fit disabled:bg-blue-300"
             >
               {btnText}
-            </button>
-          </Tooltip>
-          {/* clear local storage */}
-          <Tooltip content="clear from storage">
-            <button
-              onClick={handleClearLocalStorage}
-              className="text-xl  font-medium rounded bg-red-200 text-white px-2 py-1 w-fit"
-            >
-              <VscTrash color="red" />
             </button>
           </Tooltip>
         </div>

@@ -13,22 +13,14 @@ const DisplayActivityList = () => {
     btnText,
     handleClearLocalStorage,
     handleSavingToLocalStorage,
-    handleFilter,
-    position,
-    handleLoadLocalData,
-    localData,
     handleEditActivityList,
     handleDeleteActivity
   } = useDisplayActivities();
 
+
+
   return (
     <section className="flex flex-col gap-4 pb-10">
-      <LoadFromLocalStorage
-        handleLoadLocalData={handleLoadLocalData}
-        localData={localData}
-      />
-   
-      <FilterTags handleFilter={handleFilter} position={position} />
 
       <DisplayList
         displayList={displayList}

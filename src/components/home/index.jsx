@@ -3,24 +3,25 @@ import InputBox from "./input-box";
 import { useGlobalContext } from "../../hooks/useGlobalContext";
 import DisplayActivityList from "./display-activity-list";
 
+
 const HomeComponent = () => {
   const { list, setList } = useGlobalContext();
 
   const handleToList = (activity) => {
     let todo;
     if (Object.keys(list).length == 0) {
-      todo = { date: new Date().toLocaleDateString(), work: [activity] };
+      todo = { work: [activity] };
       setList(todo);
     } else {
-      setList({ ...list, work: [activity, ...list.work] });
+      setList({ work: [activity, ...list.work] });
     }
   };
 
   return (
     <section className="min-h-screen flex pt-20 justify-center bg-white">
       <main className="flex flex-col md:flex-row items-start gap-5  justify-start md:justify-center bg-white space-y-10 px-3">
-        <section className="flex flex-col items-start  justify-center bg-white space-y-10">
-          <header className="space-y-5">
+        <section className="flex flex-col items-start  justify-center bg-white space-y-3">
+          <header className="space-y-3">
             <h1 className="text-2xl font-mono font-bold text-black">
               Todo List
             </h1>
@@ -30,6 +31,12 @@ const HomeComponent = () => {
               <br /> Drag to rearrange your task list.
             </p>
           </header>
+          <p className=" md:max-w-sm text-gray-500 text-xs font-light">
+            You can also plan ahead but only for four days at a row 
+            By default you can plan for just one day but click the button below
+            to enable multi-day plan
+          </p>
+     
           {/* input box */}
           <InputBox addToList={handleToList} />
         </section>

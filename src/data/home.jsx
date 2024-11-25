@@ -1,4 +1,4 @@
-export const filterData = ["all", "pending", "completed", "uncompleted"];
+export const filterData = ["all", "pending", "completed"];
 
 export const borderColor = (condition) =>
   condition === "pending"

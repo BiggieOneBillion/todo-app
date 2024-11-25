@@ -1,11 +1,15 @@
 import { Badge, Button, Input } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useGlobalContext } from "../../hooks/useGlobalContext";
+
+const formatDate = (date) => date.toISOString().slice(0, 10);
 
 const InputBox = ({ addToList }) => {
   const [inputValue, setInputValue] = useState("");
   const [timeValue, setTimeValue] = useState("");
   const [invalidInput, setInvalidInput] = useState(false);
+  const { dateInput, setDateInput } = useGlobalContext();
   const handleUpdateList = () => {
     setInvalidInput(false);
 
@@ -19,8 +23,25 @@ const InputBox = ({ addToList }) => {
     setInputValue("");
     setTimeValue("");
   };
+
+  useEffect(() => {
+    setDateInput(formatDate(new Date()));
+  }, []);
+
   return (
     <div className="w-full md:max-w-xl text-black space-y-3">
+      <Field
+        label="Enter Date"
+        helperText={"Please choose date or we will use today's date"}
+      >
+        <Input
+          type="date"
+          className="w-full md:w-[400px] px-3 border"
+          placeholder="Enter your activity"
+          value={dateInput}
+          onChange={(e) => setDateInput(e.target.value)}
+        />
+      </Field>
       <Field
         label="Create Activity"
         required
