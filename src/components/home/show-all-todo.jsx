@@ -36,11 +36,11 @@ const ShowAllTodo = () => {
           handleLoadLocalData={handleLoadLocalData}
           localData={localData}
         />
-        <FilterTags
+        {localData && <FilterTags
           handleFilter={handleFilter}
           position={position}
           date={trackDateForFilter}
-        />
+        />}
         {showTodoData.todo && (
           <ShowList
             data={showTodoData}

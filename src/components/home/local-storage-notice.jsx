@@ -4,7 +4,7 @@ import { PiWarningCircleLight } from "react-icons/pi";
 const LoadFromLocalStorage = ({ localData, handleLoadLocalData }) => {
   return (
     <>
-      {localData && (
+      {localData ? (
         <p className="flex items-center gap-3 bg-green-100 border border-green-400 text-green-900 text-xs px-2 py-1 w-fit">
           <span className="text-sm">
             <PiWarningCircleLight />
@@ -16,6 +16,13 @@ const LoadFromLocalStorage = ({ localData, handleLoadLocalData }) => {
           >
             Load it
           </button>
+        </p>
+      ) : (
+        <p className="flex items-center gap-3 bg-red-100 border border-red-400 text-red-900 text-xs px-2 py-1 w-fit">
+          <span className="text-sm">
+            <PiWarningCircleLight />
+          </span>
+          <span>No data exist, please add some activities </span>{" "}
         </p>
       )}
     </>

@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useGlobalContext } from "./useGlobalContext";
 import { filterData } from "../data/home";
 
@@ -100,9 +100,10 @@ const useShowData = () => {
   function handleCheckLocalStorage() {
     let fromStorage = localStorage.getItem("todo");
 
-    if (fromStorage) {
+    if (fromStorage && Object.keys(JSON.parse(fromStorage).todo).length > 0) {
       setLocalData(true);
     }
+
   }
 
   function handleLoadLocalData() {
@@ -175,7 +176,7 @@ const useShowData = () => {
     handleDeleteActivity,
     handleEditActivityList,
     handleSavingToLocalStorage,
-    handleDeleteTodo
+    handleDeleteTodo,
   };
 };
 
